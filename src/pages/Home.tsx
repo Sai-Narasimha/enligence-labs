@@ -12,7 +12,7 @@ const Home = () => {
     }
     const handleClick = () => {
         localStorage.setItem('userName', name);
-        navigate('/topics')
+        navigate('/avatars')
     }
 
     return (

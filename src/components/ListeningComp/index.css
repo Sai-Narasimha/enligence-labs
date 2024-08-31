@@ -1,0 +1,82 @@
+
+  @keyframes animate {
+    0%{
+      width: 10.9px;
+      height: 50px;
+    }
+    50%{
+      width: 10.9px;
+      height: 30px;
+    }
+    100%{
+      width: 10.9px;
+      height: 50px;
+    }
+  }
+  
+  .BarOne{
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    animation: animate 1.1s infinite ease-in-out;
+    background: #0571ff;
+  }
+  .BarTwo{
+    border-radius: 8px;
+    background: #d6462e;
+    margin-left: 17px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    animation: animate 1.2s infinite ease-in-out;
+  }
+  .BarThree{
+    margin-left: 35px;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    animation: animate 1.3s infinite ease-in-out;
+    background: #ffb200;
+  }
+  .BarFour{
+    margin-left: 52px;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    animation: animate 1.4s infinite ease-in-out;
+    background: #13a548;
+  }
+  .BarFive{
+    margin-left: 69px;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    animation: animate 1.5s infinite ease-in-out;
+    background: #ff0000;
+  }
+  .BarSix{
+    margin-left: 86px;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    animation: animate 1.6s infinite ease-in-out;
+    background: #000000;
+  }
+  
