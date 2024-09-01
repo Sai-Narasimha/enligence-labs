@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import topicSlice from './slices/topicSlice'
+import avatarSlice from './slices/avatarSlice'
 
 export const store = configureStore({
     reducer: {
-        topicReducer: topicSlice
+        topicReducer: topicSlice,
+        avatarReducer: avatarSlice
     },
 })
 
