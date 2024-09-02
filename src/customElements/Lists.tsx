@@ -16,7 +16,6 @@ const Lists: React.FC<ListsProps> = ({ topics }) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate()
     const handleSelectTopic = (topic: TopicProps) => {
-        console.log('clicked')
         dispatch(selectTopic({ ...topic, id: '' }))
         navigate('/discussion')
     }
