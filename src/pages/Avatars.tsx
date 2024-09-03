@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 import { getApiMethod } from '../utils/api';
 
 const Avatars = () => {
-    const name = localStorage.getItem('userName') || ''
+    const { selectedTopic } = useAppSelector(state => state.topicReducer)
     const { avatar, loading } = useAppSelector(state => state.avatarReducer)
     const [background, setBackground] = useState<string>('')
 
@@ -48,12 +48,12 @@ const Avatars = () => {
     return (
         <FlexBox height={'100vh'} >
             <Box>
-                <Typography> Hey {name}!, I am your Assistence</Typography>
+                <Typography> Hey {selectedTopic?.userName}!, I am your Assistence</Typography>
                 {loading ? <Skeleton height={200} width={200} /> :
                     <Box width={'fit-content'} bgcolor={background} padding={0}>
                         <img src={avatar?.preview_image_url} alt="avatar" width={'200px'} style={{ padding: 0, margin: 0 }} />
                     </Box>}
-                <Button onClick={() => navigate('/topics')} sx={{ background: background, color: 'white', fontWeight: 'bold', fontSize: '16px', marginTop: '10px' }}>Next <span style={{ marginLeft: '10px' }}>&gt;</span> </Button>
+                <Button onClick={() => navigate('/discussion')} sx={{ background: background, color: 'white', fontWeight: 'bold', fontSize: '16px', marginTop: '10px' }}>Next <span style={{ marginLeft: '10px' }}>&gt;</span> </Button>
             </Box>
         </FlexBox>
     )

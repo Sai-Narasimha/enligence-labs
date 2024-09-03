@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAppSelector } from '../hooks/hooks';
-import { Box, IconButton, Skeleton, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import axios from 'axios';
 import FlexBox from '../customElements/FlexBox';
 import SettingsVoiceIcon from '@mui/icons-material/SettingsVoice';
 import MicOffIcon from '@mui/icons-material/MicOff';
-import ListeningAnime from '../components/ListeningComp/ListeningAnime';
 import { getApiMethod, postApiMethod } from '../utils/api';
+import debounce from '../utils/debounce';
+import { cleanText } from '../utils/cleanText';
 const Discussion = () => {
   const { selectedTopic } = useAppSelector((state) => state.topicReducer);
   const { avatar } = useAppSelector(state => state.avatarReducer);
-  console.log('avatar: ', avatar);
   const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
 
   // ------------------------------------  component states  --------------------------------------
   const [firstPromptSent, setFirstPromptSent] = useState(false);
   const [firstPrompt, setFirstPrompt] = useState<string | undefined>('');
   const [context, setContext] = useState<string>('')
-  const [vidoeId, setVideoId] = useState<string>('')
+  const [videoId, setVideoId] = useState<string>('')
   const [gemeniLoading, setGeminiLoading] = useState<boolean>(false)
   //  --------------------------------------  endpoints  ----------------------------------------------
   const API_KEY_GEMINI = process.env.REACT_APP_OPENAI_API_KEY;
@@ -44,7 +43,7 @@ const Discussion = () => {
       const url = `${endpointGemini}?key=${API_KEY_GEMINI}`;
       const res = await postApiMethod(url, payload);
       const resultText = res?.candidates[0].content.parts;
-      speak(resultText[resultText.length - 1].text);
+      speak(cleanText(resultText[resultText.length - 1].text));
       setContext(resultText[resultText.length - 1].text);
       setGeminiLoading(false)
     } catch (err) {
@@ -86,18 +85,18 @@ const Discussion = () => {
     }
   }
   // heygen video requests with video ID
-  const handleGetVideoWithId = async () => {
-    if (!vidoeId) return;
+  const handleGetVideoWithId = useCallback(async () => {
+    if (!videoId) return;
     try {
-      const result = await getApiMethod(`${endpointHetgenVid}${vidoeId}`, {
+      const result = await getApiMethod(`${endpointHetgenVid}${videoId}`, {
         "Accept": 'application/json',
         "X-Api-Key": process.env.REACT_APP_HEYGEN_API_KEY
-      })
-      console.log(result)
+      });
+      console.log(result);
     } catch (error) {
       console.log('error: ', error);
     }
-  }
+  }, [videoId]);
   // ----------------------------------------  Utility functions  --------------------------------------
   const toggleListening = () => {
     listening ? SpeechRecognition.stopListening() : SpeechRecognition.startListening();
@@ -122,8 +121,6 @@ const Discussion = () => {
     }
   };
 
-
-
   // --------------------------------------  Component Effects  ---------------------------------------
   // Ensure hooks are called in the same order by removing any conditions
   useEffect(() => {
@@ -134,14 +131,14 @@ const Discussion = () => {
 
   useEffect(() => {
     if (firstPrompt && !firstPromptSent) {
-      handleTextRequest(firstPrompt);
+      debounce(handleTextRequest(firstPrompt), 2000);
       setFirstPromptSent(true); // Ensure the prompt is only sent once
     }
   }, [firstPrompt, firstPromptSent]);
 
   useEffect(() => {
     if (!listening && transcript) {
-      handleTextRequest(transcript);
+      debounce(handleTextRequest(transcript), 2000);
       resetTranscript(); // Clear the transcript
     }
   }, [listening, transcript]);
@@ -167,10 +164,10 @@ const Discussion = () => {
   }, [context]);
 
   useEffect(() => {
-    if (vidoeId) {
+    if (videoId) {
       handleGetVideoWithId();
     }
-  }, [vidoeId]);
+  }, [videoId]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Your browser does not support speech recognition.</span>;
@@ -181,13 +178,14 @@ const Discussion = () => {
         <Typography fontWeight={'bold'} fontSize={20} bgcolor={'purple'} color='white' py={2} borderRadius={'8px 8px 0 0'}>
           {selectedTopic?.name}
         </Typography>
-        {gemeniLoading ? <Skeleton width={'70%'} height={'500px'} /> : <Box height={'300px'} width={'100%'}>
+        <Box height={'300px'} width={'100%'}>
           <img src={avatar?.preview_image_url} alt={'avatar'} width={'300px'} />
-        </Box>}
-        <Box>
+        </Box>
+        <Box mt={5}>
           <IconButton onClick={toggleListening} >
             {listening ? <SettingsVoiceIcon style={{ fontSize: '40px', color: 'purple' }} /> : <MicOffIcon style={{ fontSize: '40px' }} />}
           </IconButton>
+          {gemeniLoading && <Typography>Analizing Question.....</Typography>}
           {listening && <Box ><Typography color='black'>I am listening....</Typography></Box>}
         </Box>
       </Box>

@@ -4,6 +4,7 @@ interface Topic {
     id: string;
     name: string;
     prompt: string;
+    userName: string
 }
 
 interface TopicState {
